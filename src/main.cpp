@@ -1,7 +1,7 @@
 //TO DO:
 // fix copy when emplace_back session to game.sessions_
 
-#include "sdk.h"
+#include "infrastructure/sdk.h"
 
 #include <algorithm>
 #include <chrono>
@@ -21,20 +21,20 @@
 #include <boost/archive/polymorphic_text_oarchive.hpp>
 #include <boost/archive/polymorphic_text_iarchive.hpp>
 
-#include "app.h"
-#include "database.h"
-#include "collision_detector.h"
-#include "command_line_args.h"
-#include "model.h"
-#include "loot_generator.h"
-#include "update_items.h"
-#include "json_loader.h"
-#include "request_handler.h"
-#include "logger.h"
-#include "ticker.h"
-#include "extra_data.h"
-#include "serializer.h"
-#include "save_manager.h"
+#include "app/app.h"
+#include "app/database.h"
+#include "domain/collision_detector.h"
+#include "utils/command_line_args.h"
+#include "domain/model.h"
+#include "domain/loot_generator.h"
+#include "app/update_items.h"
+#include "infrastructure/json_loader.h"
+#include "infrastructure/request_handler.h"
+#include "utils/logger.h"
+#include "app/ticker.h"
+#include "infrastructure/extra_data.h"
+#include "infrastructure/serializer.h"
+#include "infrastructure/save_manager.h"
 
 using namespace std::literals;
 namespace net = boost::asio;

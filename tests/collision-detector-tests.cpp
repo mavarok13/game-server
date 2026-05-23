@@ -6,8 +6,8 @@
 #include "catch2/matchers/catch_matchers_container_properties.hpp"
 
 #include "collision-detector-tests.h"
-#include "../src/collision_detector.h"
-#include "../src/geom.h"
+#include "domain/collision_detector.h"
+#include "domain/geom.h"
 
 using Catch::Matchers::Predicate;
 using Catch::Matchers::WithinRel;
