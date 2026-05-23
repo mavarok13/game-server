@@ -1,6 +1,6 @@
 #include "catch2/catch_test_macros.hpp"
 
-#include "../src/http_utils.h"
+#include "infrastructure/http_utils.h"
 
 SCENARIO("Url decoding tests") {
     using namespace std::literals;

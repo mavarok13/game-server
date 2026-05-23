@@ -6,11 +6,11 @@
 #include <filesystem>
 #include <sstream>
 
-#include "../src/save_manager.h"
-#include "../src/serializer.h"
-#include "../src/model.h"
-#include "../src/app.h"
-#include "../src/json_loader.h"
+#include "infrastructure/save_manager.h"
+#include "infrastructure/serializer.h"
+#include "domain/model.h"
+#include "app/app.h"
+#include "infrastructure/json_loader.h"
 
 namespace fs = std::filesystem;
 using namespace Catch::Matchers;
