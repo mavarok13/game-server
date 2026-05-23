@@ -1,0 +1,10 @@
+.git
+.gitignore
+build
+cmake-build-*
+Dockerfile
+docker-compose.yml
+*.user
+*.suo
+*.log
+saved_data

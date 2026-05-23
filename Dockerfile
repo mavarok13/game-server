@@ -1,37 +1,51 @@
-FROM gcc:11.3 as build
+FROM gcc:11.3-bullseye AS build
 
-RUN apt update && \
-    apt install -y \
-      python3-pip \
-      cmake \
-    && \
-    pip3 install conan==1.*
+WORKDIR /app
 
-COPY conanfile.txt /app/
-RUN mkdir /app/build && cd /app/build && \
-    conan install .. --build=missing -s compiler.libcxx=libstdc++11 -s build_type=Release
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        cmake \
+        python3-pip \
+        ca-certificates && \
+    pip3 install --no-cache-dir "conan<2" && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY ./src /app/src
-COPY ./tests /app/tests
+COPY conanfile.txt ./
+RUN conan profile new default --detect && \
+    conan profile update settings.compiler.libcxx=libstdc++11 default && \
+    mkdir build && \
+    conan install . \
+        --install-folder=build \
+        --build=missing \
+        -s build_type=Release
 
-COPY CMakeLists.txt /app/
-RUN cd /app/build && \
-    cmake -DCMAKE_BUILD_TYPE=Release ..
+COPY CMakeLists.txt ./
+COPY src ./src
+COPY tests ./tests
 
-RUN cd /app/build && cmake --build . -t game_server
+RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build build --config Release --target game_server --parallel
 
-FROM ubuntu:22.04 as run
+RUN find /app/build -maxdepth 4 -type f -executable -print
 
-RUN mkdir /app/ && mkdir /app/game_server_saves
-RUN chmod 777 /app/game_server_saves
+FROM debian:bookworm-slim AS run
 
-#RUN mkdir /tmp/volume && chmod 777 /tmp/volume
+WORKDIR /app
 
-RUN groupadd -r www && useradd -r -g www www
-USER www 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libstdc++6 libgcc-s1 libpq5 ca-certificates && \
+    rm -rf /var/lib/apt/lists/* && \
+    useradd --create-home --shell /usr/sbin/nologin appuser && \
+    mkdir -p /app/game_server_saves && \
+    chown -R appuser:appuser /app
 
-COPY --from=build /app/build/game_server /app/
-COPY ./data /app/data
-COPY ./static /app/static
+COPY --from=build /app/build/game_server ./game_server
+COPY data ./data
+COPY static ./static
 
-ENTRYPOINT ["/app/game_server", "-c", "/app/data/config.json", "-w", "/app/static", "-t", "50", "--randomize-spawn-points", "--state-file", "/app/game_server_saves", "--save-state-period", 5000]
+USER appuser
+
+EXPOSE 8080
+
+ENTRYPOINT ["/app/game_server"]
+CMD ["-c", "/app/data/config.json", "-w", "/app/static", "--tick-period", "100", "--state-file", "/app/game_server_saves/state.dat"]
