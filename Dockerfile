@@ -48,4 +48,4 @@ USER appuser
 EXPOSE 8080
 
 ENTRYPOINT ["/app/game_server"]
-CMD ["-c", "/app/data/config.json", "-w", "/app/static", "--tick-period", "100", "--state-file", "/app/game_server_saves/state.dat"]
+CMD ["-c", "/app/data/config.json", "-w", "/app/static", "--tick-period", "40", "--state-file", "/app/game_server_saves/state.dat"]
