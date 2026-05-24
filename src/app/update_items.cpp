@@ -57,9 +57,11 @@ void UpdateSessionItems(model::GameSession & session, int interval) {
 
             ++item_event;
         } else {
+            const model::Dog & dog = session.GetDogs().at(office_event->gatherer_id);
+
             for (app::Player & player : app::PlayersManager::Instance().GetPlayers()) {
-                if (player.GetSessionId() == session.GetId() && player.GetPlayerId() == office_event->gatherer_id) {
-                    for (model::Item & item : (session.GetDogs().at(office_event->gatherer_id)).GetItems()) {
+                if (player.GetSessionId() == session.GetId() && player.GetPlayerId() == dog.GetId()) {
+                    for (const model::Item & item : dog.GetItems()) {
                         player.AddScores(item.GetType().GetCost());
                     }
 
